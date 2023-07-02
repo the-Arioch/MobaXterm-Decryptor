@@ -93,6 +93,33 @@ class MobaXtermCrypto:
             raise ValueError('Invalid ciphertext.')
 
 
+def DecryptLine(SysHostname: str, SysUsername: str, SessionP: str, Ciphertext: str, 
+                ConnHostname: str = None, ConnUsername: str = None):
+    Host_B = SysHostname.encode('mbcs')
+    User_B = SysUsername.encode('mbcs')
+    Sess_B = SessionP.encode('mbcs')
+    
+    print("[*] Computer: "+SysHostname)
+    print("[*] Username: "+SysUsername)
+    print("[*] SessionP: "+SessionP)
+    print("[*] EncPass:  "+Ciphertext)
+
+    cipher = MobaXtermCrypto(Host_B,User_B,Sess_B)
+    
+    if (ConnHostname is None) or (ConnUsername is None):
+      passw = cipher.DecryptCredential(Ciphertext)
+    else:
+      ConnHost_B = ConnHostname.encode('mbcs')
+      ConnUser_B = ConnUsername.encode('mbcs')
+      
+      print("[*] Host/IP:  "+ConnHostname)
+      print("[*] User:     "+ConnUsername)
+      
+      passw = cipher.DecryptPassword(Ciphertext,ConnHost_B,ConnUser_B)
+      
+    print("[*] Password: " + passw.decode("mbcs"))
+    print()
+
 print('''
   __  __       _          __  ___
  |  \/  | ___ | |__   __ _\ \/ / |_ ___ _ __ _ __ ___
@@ -107,30 +134,18 @@ print('''
 
       by illwill - decryption class by HyperSine\n''')
 
-if len(sys.argv) < 5:
-    print("Usage:\n")
-    print("From inifile:")
-    print("    MobaDecrypt.py Computer Username SessionP Hash\n")
-    print("From Registry Password:")
-    print("    MobaDecrypt.py Computer Username SessionP Hash Host/IP User")
-    print("From Registry Credential:")
-    print("    MobaDecrypt.py Computer Username SessionP Hash")
-    sys.exit(1)
-else:
-    print("[*] Computer: "+sys.argv[1])
-    print("[*] Username: "+sys.argv[2])
-    print("[*] SessionP: "+sys.argv[3])
-    print("[*] EncPass:  "+sys.argv[4])
-
 if len(sys.argv) == 5:
-    cipher = MobaXtermCrypto(sys.argv[1].encode('cp1252'), sys.argv[2].encode('cp1252') , sys.argv[3].encode('cp1252'))
-    passw = cipher.DecryptCredential(sys.argv[4])
-    print('[*] Password: %s' % passw.decode("ascii"))
-    sys.exit(1)
+    DecryptLine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    sys.exit(0) # correct exit
 if len(sys.argv) == 7:
-    print("[*] Host/IP:  "+sys.argv[5])
-    print("[*] User:     "+sys.argv[6])
-    cipher = MobaXtermCrypto(sys.argv[1].encode('cp1252'), sys.argv[2].encode('cp1252') , sys.argv[3].encode('cp1252'))
-    passw = cipher.DecryptPassword(sys.argv[4], sys.argv[5].encode('cp1252'), sys.argv[6].encode('cp1252'))
-    print('[*] Password: %s' % passw.decode("ascii"))
-    sys.exit(1)
+    DecryptLine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    sys.exit(0) # correct exit
+
+print("Usage:\n")
+print("From inifile:")
+print("    MobaDecrypt.py Computer Username SessionP Hash\n")
+print("From Registry Password:")
+print("    MobaDecrypt.py Computer Username SessionP Hash Host/IP User")
+print("From Registry Credential:")
+print("    MobaDecrypt.py Computer Username SessionP Hash")
+sys.exit(2) # command line error    
