@@ -32,5 +32,15 @@
             "justMyCode": true,
             "args": ["ShadowSurface","DoubleSine","165821882556840","F0+wuBvbe9qPW6ypiOeYHTHhKdShRc/nXaM1Ky1jeTfw46TzQoSesX9buGm0WW36yP4lhH70ZCHZpEo4wLJhIl1","45.32.110.171","root"]
         }
+        ,  
+        {
+            "name": "Python: Test INI",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["ini"]
+        }
     ]
 }
